@@ -9,14 +9,14 @@ const memberStore = useMemberStore()
 const query = defineProps<{
   type: string
 }>()
-
+/*
 onLoad(() => {
     if (!memberStore.profile) {
     uni.navigateTo({
       url: '/pages/login/login'
     })
   }
-})
+})*/
 
 const priviledgeTabs = ref([
   { priviledgeType: 0, title: '券', isRender: false },
@@ -48,14 +48,8 @@ priviledgeTabs.value[activeIndex.value].isRender = true
             <!-- 游标 -->
             <view class="cursor" :style="{ left: activeIndex * 50 + 13 + '%' }"></view>
         </view>
-
-       <!-- <view v-for="item in priviledgeTabs" :key="item.title"> 
-          <priviledgeList v-if="item.isRender" />
-        </view>   <view v-for="item in priviledgeTabs" :key="item.title"> 
-          <priviledgeList v-if="item.isRender" />
-        </view> -->
          <!-- 滑动容器 -->
-      
+
         <swiper class="swiper" :current="activeIndex" @change="activeIndex = $event.detail.current">
           <!-- 滑动项 -->
           <swiper-item v-for="item in priviledgeTabs" :key="item.title">
@@ -64,15 +58,15 @@ priviledgeTabs.value[activeIndex.value].isRender = true
           </swiper-item>
         </swiper>
     </view>
-    
- 
+
+
 </template>
 
 <style lang="scss">
 // 深度选择器修改 uni-data-picker 组件样式
 .tabs {
   display: flex;
-  
+
   justify-content: space-around;
   line-height: 60rpx;
   margin: 0 10rpx;

@@ -9,10 +9,22 @@ export const getCoupon = () => {
     })
 }
 
+export const getDefaultCoupon = () => {
+    return http<CouponItem[]> ({
+        url: '/coupon/query/default',
+        method: 'GET'
+    })
+}
+
+
+
+
 export const getCouponAvailable = () => {
     return http<CouponItem[]> ({
         url: '/coupon/query/self/available',
         method: 'GET'
     })
 }
+
+
 

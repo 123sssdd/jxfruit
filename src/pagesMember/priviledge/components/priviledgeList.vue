@@ -18,7 +18,9 @@ const props = defineProps<{
   priviledgeType: number
 }>()
 
-// 请求参数
+
+/*
+// 请求分页参数
 const queryParams: Required<OrderListParams> = {
   pageNum: 1,
   pageSize: 5,
@@ -26,9 +28,52 @@ const queryParams: Required<OrderListParams> = {
 }
 
 const emit = defineEmits(['showComment'])
-
+*/
 // 获取订单列表
-const priviledgeList = ref<CouponItem[]>([])
+
+const priviledgeList = ref<CouponItem[]>([
+  {
+    id: 1,
+    type: '新人专享',
+    price: 10,
+    effectiveTime: '2023-01-01 00:00:00',
+    effectivePrice: 50,
+    userId: 1001,
+    isUsed: 0, // 0代表未使用，1代表已使用
+    expired: 0 // 0代表未过期，1代表已过期
+  },
+  {
+    id: 2,
+    type: '满减券',
+    price: 20,
+    effectiveTime: '2023-02-01 00:00:00',
+    effectivePrice: 100,
+    userId: 1001,
+    isUsed: 0,
+    expired: 0
+  },
+  {
+    id: 3,
+    type: '折扣券',
+    price: 0.8, // 折扣率
+    effectiveTime: '2023-03-01 00:00:00',
+    effectivePrice: 200, // 折扣券可能无需满足特定金额
+    userId: 1002,
+    isUsed: 1,
+    expired: 0
+  },
+  {
+    id: 4,
+    type: '现金券',
+    price: 5,
+    effectiveTime: '2022-12-01 00:00:00',
+    effectivePrice: 200,
+    userId: 1002,
+    isUsed: 0,
+    expired: 1 // 这张优惠券已经过期
+  }
+]);
+
 // 是否加载中标记，用于防止滚动触底触发多次请求
 const isLoading = ref(false)
 
@@ -51,7 +96,8 @@ const getMemberPriviledgeData = async () => {
   // priviledgeList.value = res.data
 
   console.log("privi", priviledgeList.value)
- 
+
+  /*
   // // 分页条件
   if (queryParams.pageNum < res.data.pages) {
   //   // 页码累加
@@ -60,7 +106,7 @@ const getMemberPriviledgeData = async () => {
   //   // 分页已结束
     isFinish.value = true
   }
-
+*/
   // console.log("res", res.data.records)
 }
 
@@ -73,12 +119,12 @@ const getMemberData = async () => {
   member.value = res.data
 }
 
-
+/*
 onMounted(() => {
   getMemberPriviledgeData()
   getMemberData()
 })
-
+*/
 const useCoupon = (priviledge: CouponItem) => {
   if (priviledge.isUsed === 0 && priviledge.expired === 0) {
     uni.switchTab({url: '/pages/cart/cart'})
@@ -89,12 +135,13 @@ const recharge = () => {
   uni.showModal({
     title: '敬请期待'
   })
-  
+
 }
 
 
 // 是否分页结束
 const isFinish = ref(false)
+
 // 是否触发下拉刷新
 const isTriggered = ref(false)
 // 自定义下拉刷新被触发
@@ -102,7 +149,7 @@ const onRefresherrefresh = async () => {
   // 开始动画
   isTriggered.value = true
   // 重置数据
-  queryParams.pageNum = 1
+  //queryParams.pageNum = 1
   priviledgeList.value = []
   isFinish.value = false
   // 加载数据
@@ -110,6 +157,7 @@ const onRefresherrefresh = async () => {
   // 关闭动画
   isTriggered.value = false
 }
+
 </script>
 
 <template>
@@ -122,22 +170,22 @@ const onRefresherrefresh = async () => {
     @refresherrefresh="onRefresherrefresh"
     @scrolltolower="getMemberPriviledgeData"
   >
-    <view 
+    <view
     v-for="priviledge in priviledgeList" :key="priviledge.id"
-    v-if="props.priviledgeType === 0"  
+    v-if="props.priviledgeType === 0"
     >
       <view class="card"
       :class="[(priviledge.isUsed === 1 || priviledge.expired === 1) ? 'used' : '']">
       <!-- 订单信息 -->
       <view>
         <view><text style="font-size: 40rpx">￥</text>{{ priviledge.price }}</view>
-        <view>{{ priviledge.type }}</view>        
+        <view>{{ priviledge.type }}</view>
       </view>
       <view class="regulation">
         <view class="limit">满{{ priviledge.effectivePrice }} 可用</view>
         <view class="effective-time">有效期至：{{ priviledge.effectiveTime }}</view>
       </view>
-      <view class="use" @click="useCoupon(priviledge)">{{ priviledge.isUsed === 1 ? '已使用': 
+      <view class="use" @click="useCoupon(priviledge)">{{ priviledge.isUsed === 1 ? '已使用':
         (priviledge.expired === 1 ? '已过期': '使用')}}</view>
       </view>
     </view>
@@ -146,16 +194,16 @@ const onRefresherrefresh = async () => {
       <view class="text">积分：{{ member?.points }} </view>
       <view class="recharge" @click="recharge">充值</view>
     </view>
-    <!-- 底部提示文字
+    <!-- 底部提示文字-->
     <view class="loading-text" :style="{ paddingBottom: safeAreaInsets?.bottom + 'px' }">
       {{ isFinish ? '没有更多数据~' : '正在加载...' }}
-    </view> -->
+    </view>
   </scroll-view>
 </template>
 
 <style lang="scss">
 
-// 订单列表
+// 优惠券列表
 .orders {
   height: 100%;
   .used {

@@ -1,22 +1,22 @@
 <script setup lang="ts">
     import type { CouponItem } from '@/types/coupon'
-    import { getCoupon } from '@/services/coupon'
+    import { getDefaultCoupon } from '@/services/coupon'
     import { useCouponStore } from '@/stores/modules/coupon'
-    import { onLoad, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
-    import { computed, ref } from 'vue'
+    import { onLoad } from '@dcloudio/uni-app'
+    import {  ref } from 'vue'
 
-    const couponList = ref<CouponItem[]>()
-    const getCouponData = async () => {
-        const res = await getCoupon()
-        couponList.value = res.data
+    const defaultCouponList = ref<CouponItem[]>()
+    const getCouponDefaultData = async () => {
+        const res = await getDefaultCoupon()
+        defaultCouponList.value = res.data
     }
     onLoad(() => {
-        getCouponData()
+        getCouponDefaultData()
     })
 
     // 获取页面参数
     const query = defineProps<{
-        totalPrice?: number
+        totalPrice: number
     }>()
 
     const onChangeCoupon = (item: CouponItem) => {
@@ -30,15 +30,15 @@
 
 <template>
     <view class="coupon">
-        <view v-if="couponList?.length !== 0"> 
-            <template v-for="(item,index) in couponList" :key="index"
+        <view v-if="defaultCouponList?.length !== 0">
+            <template v-for="(item,index) in defaultCouponList" :key="index"
             >
-                <view class="card" v-if = "item.isUsed === 0 && query?.totalPrice >= item.effectivePrice 
-                && query?.totalPrice >= item.price && item.expired === 0">
+                <view class="card" v-if = "item.isUsed === 0 && query.totalPrice >= item.effectivePrice
+                && query.totalPrice >= item.price && item.expired === 0">
                 <!-- 订单信息 -->
                     <view>
                         <view><text style="font-size: 40rpx">￥</text>{{ item.price }}</view>
-                        <view>{{ item.type }}</view>        
+                        <view>{{ item.type }}</view>
                     </view>
                     <view class="regulation">
                         <view class="limit">满{{ item.effectivePrice }} 可用</view>
@@ -48,7 +48,7 @@
                 </view>
             </template>
         </view>
-        <view v-else> 
+        <view v-else>
             暂无合适的优惠券
         </view>
     </view>
